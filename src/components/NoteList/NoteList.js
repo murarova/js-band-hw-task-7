@@ -1,9 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import NoteItem from '../NoteItem/NoteItem';
 
-const NoteList = ({ notes, onDelete, onEdit, onDone }) => (
+import * as notesActions from '../../redux/actions/notesActions';
+
+const NoteList = ({ notes, deleteNote, onEdit, doneNote }) => (
     <div className="row">
         <div className="col-xs-12">
             <ul className="note-list">
@@ -17,9 +19,9 @@ const NoteList = ({ notes, onDelete, onEdit, onDone }) => (
                             id={id}
                             priority={priority}
                             done={done}
-                            onDelete={() => onDelete(id)}
+                            onDelete={() => deleteNote(id)}
                             onEdit={() => onEdit(id)}
-                            onDone={() => onDone(id)}
+                            onDone={() => doneNote(id)}
                         />
                     );
                 })}
@@ -30,13 +32,18 @@ const NoteList = ({ notes, onDelete, onEdit, onDone }) => (
 
 NoteList.propTypes = {
     notes: PropTypes.arrayOf(PropTypes.object).isRequired,
-    onDelete: PropTypes.func.isRequired,
+    deleteNote: PropTypes.func.isRequired,
     onEdit: PropTypes.func.isRequired,
-    onDone: PropTypes.func.isRequired,
+    doneNote: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
     notes: state.notes.notes,
 });
 
-export default connect(mapStateToProps)(NoteList);
+const mapDispatchToProps = dispatch => ({
+    deleteNote: id => dispatch(notesActions.deleteNote(id)),
+    doneNote: id => dispatch(notesActions.doneNote(id)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(NoteList);

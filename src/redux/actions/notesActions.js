@@ -1,7 +1,7 @@
 export const notesActionTypes = {
     ADD_NOTE: 'ADD_NOTE',
-    ADD_NOTE_CANCEL: 'ADD_NOTE_CANCEL',
     EDIT_NOTE: 'EDIT_NOTE',
+    EDIT_SUCCESS: 'EDIT_SUCCESS',
     EDIT_NOTE_CANCEL: 'EDIT_NOTE_CANCEL',
     DELETE_NOTE: 'DELETE_NOTE',
     DONE_NOTE: 'DONE_NOTE',
@@ -14,12 +14,15 @@ export const addNote = note => ({
     },
 });
 
-export const addNoteCancel = () => ({
-    type: notesActionTypes.ADD_NOTE_CANCEL,
+export const editNote = id => ({
+    type: notesActionTypes.EDIT_NOTE,
+    payload: {
+        id,
+    },
 });
 
-export const editNote = note => ({
-    type: notesActionTypes.EDIT_NOTE,
+export const editNoteSuccess = note => ({
+    type: notesActionTypes.EDIT_SUCCESS,
     payload: {
         note,
     },

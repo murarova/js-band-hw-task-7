@@ -10,11 +10,10 @@ import '../../index.css';
 
 import * as modalActions from '../../redux/actions/modalActions';
 import * as notesActions from '../../redux/actions/notesActions';
-// import * as filterActions from '../../redux/actions/filterActions';
 
 const INITIAL_FILTER_STATE = {
     title: '',
-    priority: '',
+    priority: 'all',
     done: '',
 };
 
@@ -23,6 +22,7 @@ class Dashboard extends Component {
         super(props);
         this.state = {
             notes: [],
+            filteredNotes: [],
             filterState: INITIAL_FILTER_STATE,
         };
     }
@@ -42,10 +42,21 @@ class Dashboard extends Component {
     // }
     // =====================
 
-    onSubmit = (title, text, priority, id, done) => {
-        const { closeModal, addNote } = this.props;
+    componentDidUpdate(prevProps, prevState) {
+        const { notes, filterState } = this.state;
 
-        if (id === '') {
+        if (
+            prevState.notes !== notes ||
+            prevState.filterState !== filterState
+        ) {
+            this.filterItems();
+        }
+    }
+
+    onSubmit = (title, text, priority, id, done) => {
+        const { addNote, editNoteSuccess } = this.props;
+        console.log('id', id);
+        if (!id) {
             const noteToAdd = {
                 done,
                 title,
@@ -62,20 +73,19 @@ class Dashboard extends Component {
                 priority,
                 id,
             };
-            addNote(noteToAdd);
+            editNoteSuccess(noteToAdd);
         }
-        closeModal();
+        this.props.closeModal();
+    };
+
+    onCancel = () => {
+        this.props.editNoteCancel();
+        this.props.closeModal();
     };
 
     onEdit = id => {
-        const currentNote = this.findNote(id)[0];
-        // this.setState({ isModalOpen: true, note: currentNote });
         this.props.openModal();
-        this.props.editNote(currentNote);
-    };
-
-    onClose = () => {
-        this.props.closeModal();
+        this.props.editNote(id);
     };
 
     onDone = id => {
@@ -88,7 +98,7 @@ class Dashboard extends Component {
     };
 
     findNote = id => {
-        const { notes } = this.props;
+        const { notes } = this.state;
         return notes.filter(el => el.id === id);
     };
 
@@ -97,36 +107,29 @@ class Dashboard extends Component {
         if (e.target.value === 'all') {
             const newFilterValue = { [e.target.name]: '' };
 
-            this.setState(
-                { filterState: { ...filterState, ...newFilterValue } },
-                () => this.filterItems(),
-            );
+            this.setState({
+                filterState: { ...filterState, ...newFilterValue },
+            });
             return;
         }
         if (e.target.value === 'open') {
             const newFilterValue = { [e.target.name]: false };
-
-            this.setState(
-                { filterState: { ...filterState, ...newFilterValue } },
-                () => this.filterItems(),
-            );
+            this.setState({
+                filterState: { ...filterState, ...newFilterValue },
+            });
             return;
         }
         if (e.target.value === 'done') {
             const newFilterValue = { [e.target.name]: true };
 
-            this.setState(
-                { filterState: { ...filterState, ...newFilterValue } },
-                () => this.filterItems(),
-            );
+            this.setState({
+                filterState: { ...filterState, ...newFilterValue },
+            });
             return;
         }
         const newFilterValue = { [e.target.name]: e.target.value };
 
-        this.setState(
-            { filterState: { ...filterState, ...newFilterValue } },
-            () => this.filterItems(),
-        );
+        this.setState({ filterState: { ...filterState, ...newFilterValue } });
     };
 
     updateFilterNotes = (previousFilteredNotes, curentFilteredNotes) => {
@@ -191,8 +194,7 @@ class Dashboard extends Component {
     };
 
     render() {
-        const { isModalOpen, closeModal, notes, note } = this.props;
-
+        const { isModalOpen, openModal, closeModal, notes } = this.props;
         return (
             <div className="row">
                 <div className="col-xs-12">
@@ -201,15 +203,14 @@ class Dashboard extends Component {
                         {isModalOpen && (
                             <Modal onClose={closeModal}>
                                 <NoteEditor
-                                    note={note}
-                                    onCancel={this.onClose}
+                                    onCancel={this.onCancel}
                                     onSubmit={this.onSubmit}
                                 />
                             </Modal>
                         )}
                         <Filter
                             onChange={this.onFilterChange}
-                            onClick={this.onCreate}
+                            onClick={openModal}
                         />
                         {notes.length > 0 && (
                             <NoteList
@@ -240,24 +241,24 @@ Dashboard.propTypes = {
     openModal: PropTypes.func.isRequired,
     closeModal: PropTypes.func.isRequired,
     addNote: PropTypes.func.isRequired,
-    // addNoteCancel: PropTypes.func.isRequired,
     editNote: PropTypes.func.isRequired,
     isModalOpen: PropTypes.bool.isRequired,
+    editNoteSuccess: PropTypes.func.isRequired,
+    editNoteCancel: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
-    notes: state.notes.notes,
-    note: state.notes.note,
-    // filteredNotes: state.filteredNotes.filter,
     isModalOpen: state.modal.isModalOpen,
+    notes: state.notes.notes,
 });
 
 const mapDispatchToProps = dispatch => ({
     openModal: () => dispatch(modalActions.openModal()),
     closeModal: () => dispatch(modalActions.closeModal()),
     addNote: note => dispatch(notesActions.addNote(note)),
-    addNoteCancel: () => dispatch(notesActions.addNoteCancel()),
-    editNote: note => dispatch(notesActions.editNote(note)),
+    editNote: id => dispatch(notesActions.editNote(id)),
+    editNoteSuccess: note => dispatch(notesActions.editNoteSuccess(note)),
+    editNoteCancel: () => dispatch(notesActions.editNoteCancel()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

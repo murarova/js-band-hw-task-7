@@ -1,19 +1,21 @@
 /* eslint-disable no-alert */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+// import * as notesActions from '../../redux/actions/notesActions';
+import { connect } from 'react-redux';
 
-const INITIAL_STATE = {
-    title: '',
-    text: '',
-    priority: 'high',
-    id: '',
-    done: false,
-};
+// const INITIAL_STATE = {
+//     title: '',
+//     text: '',
+//     priority: 'high',
+//     id: '',
+//     done: false,
+// };
 
 class NoteEditor extends Component {
     constructor(props) {
         super(props);
-        this.state = props.note || INITIAL_STATE;
+        this.state = props.note;
     }
 
     onChange = e => this.setState({ [e.target.name]: e.target.value });
@@ -23,7 +25,6 @@ class NoteEditor extends Component {
         e.preventDefault();
         if (text && title) {
             this.props.onSubmit(title, text, priority, id, done);
-            this.setState({ ...INITIAL_STATE });
         } else {
             alert('Please, fill all form fields');
         }
@@ -113,4 +114,8 @@ NoteEditor.propTypes = {
     }),
 };
 
-export default NoteEditor;
+const mapStateToProps = state => ({
+    note: state.notes.note,
+});
+
+export default connect(mapStateToProps)(NoteEditor);

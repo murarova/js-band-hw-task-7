@@ -1,11 +1,8 @@
 /* eslint-disable jsx-a11y/no-onchange */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 
-import * as modalActions from '../../redux/actions/modalActions';
-
-const Filter = ({ openModal, onChange }) => (
+const Filter = ({ onClick, onChange }) => (
     <>
         <div className="row">
             <div className="col-xs-12">
@@ -56,7 +53,7 @@ const Filter = ({ openModal, onChange }) => (
                             <button
                                 type="button"
                                 className="btn btn-primary width-100"
-                                onClick={openModal}
+                                onClick={onClick}
                             >
                                 Create
                             </button>
@@ -69,12 +66,8 @@ const Filter = ({ openModal, onChange }) => (
 );
 
 Filter.propTypes = {
-    openModal: PropTypes.func.isRequired,
+    onClick: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired,
 };
 
-const mapDispatchToProps = dispatch => ({
-    openModal: () => dispatch(modalActions.openModal()),
-});
-
-export default connect(null, mapDispatchToProps)(Filter);
+export default Filter;
