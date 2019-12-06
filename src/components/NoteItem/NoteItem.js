@@ -10,26 +10,29 @@ class NoteItem extends Component {
             isDropdawnOpen: false,
             timeout: null,
         };
+        this.onClick = this.onClick.bind(this);
+        this.close = this.close.bind(this);
     }
 
-    onClick = () => {
+    componentWillUnmount() {
+        const { timeout } = this.state;
+        clearTimeout(timeout);
+    }
+
+    onClick() {
         this.setState(state => ({
             isDropdawnOpen: !state.isDropdawnOpen,
         }));
-    };
+    }
 
-    close = () => {
+    close() {
         const timeout = setTimeout(() => {
             this.setState({
                 isDropdawnOpen: false,
             });
         }, 100);
         this.setState({ timeout });
-    };
-
-    componentWillUnmount = () => {
-        clearTimeout(this.state.timeout);
-    };
+    }
 
     render() {
         const {

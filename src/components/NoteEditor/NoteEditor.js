@@ -4,31 +4,28 @@ import PropTypes from 'prop-types';
 // import * as notesActions from '../../redux/actions/notesActions';
 import { connect } from 'react-redux';
 
-// const INITIAL_STATE = {
-//     title: '',
-//     text: '',
-//     priority: 'high',
-//     id: '',
-//     done: false,
-// };
-
 class NoteEditor extends Component {
     constructor(props) {
         super(props);
         this.state = props.note;
+        this.onChange = this.onChange.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
     }
 
-    onChange = e => this.setState({ [e.target.name]: e.target.value });
+    onChange(e) {
+        this.setState({ [e.target.name]: e.target.value });
+    }
 
-    onSubmit = e => {
+    onSubmit(e) {
+        const { onSubmit } = this.props;
         const { title, text, priority, done, id } = this.state;
         e.preventDefault();
         if (text && title) {
-            this.props.onSubmit(title, text, priority, id, done);
+            onSubmit(title, text, priority, id, done);
         } else {
             alert('Please, fill all form fields');
         }
-    };
+    }
 
     render() {
         const { text, title } = this.state;

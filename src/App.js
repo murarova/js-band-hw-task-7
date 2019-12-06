@@ -1,6 +1,6 @@
 import React from 'react';
 import { Switch, Redirect, Route } from 'react-router-dom';
-import Dashboard from './components/Dashboard/Dashboard';
+import Dashboard from './pages/Dashboard';
 import PageNotFound from './pages/PageNotFound';
 
 const App = () => (

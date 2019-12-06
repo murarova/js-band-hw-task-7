@@ -1,18 +1,12 @@
 export const filterActionTypes = {
-    SEARCH_NOTE: 'SEARCH_NOTE',
-    CLEAR_SEARCH: 'CLEAR_SEARCH',
+    SEARCH_NOTES: 'SEARCH_NOTES',
 };
 
-export const searchNotes = search => ({
-    type: filterActionTypes.SEARCH_TASKS,
-    payload: search,
-});
-
-export const clearSearch = () => ({
-    type: filterActionTypes.CLEAR_SEARCH,
-    payload: {
-        title: '',
-        priority: '',
-        done: '',
-    },
-});
+export const searchNotes = search => {
+    return {
+        type: filterActionTypes.SEARCH_NOTES,
+        payload: {
+            ...search,
+        },
+    };
+};

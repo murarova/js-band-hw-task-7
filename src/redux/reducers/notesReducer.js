@@ -32,28 +32,17 @@ const notesReducer = (state = initialState, { type, payload }) => {
 
         case notesActionTypes.EDIT_SUCCESS:
             return {
+                ...state,
                 notes: state.notes.map(note =>
                     note.id === payload.note.id ? payload.note : note,
                 ),
-                note: {
-                    title: '',
-                    text: '',
-                    priority: 'high',
-                    id: '',
-                    done: false,
-                },
+                note: initialState.note,
             };
 
         case notesActionTypes.EDIT_NOTE_CANCEL:
             return {
                 ...state,
-                note: {
-                    title: '',
-                    text: '',
-                    priority: 'high',
-                    id: '',
-                    done: false,
-                },
+                note: initialState.note,
             };
 
         case notesActionTypes.DONE_NOTE:

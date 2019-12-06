@@ -1,15 +1,20 @@
 import { filterActionTypes } from '../actions/filterActions';
 
 const initialState = {
-    filter: [],
+    filterState: {
+        title: '',
+        priority: '',
+        done: '',
+    },
 };
 
 const filterReducer = (state = initialState, { type, payload }) => {
     switch (type) {
-        case filterActionTypes.SEARCH_TASKS:
-            return { ...state, filter: payload };
-        case filterActionTypes.CLEAR_SEARCH:
-            return { ...state, filter: payload };
+        case filterActionTypes.SEARCH_NOTES:
+            return {
+                ...state,
+                filterState: { ...state.filterState, ...payload },
+            };
 
         default:
             return state;

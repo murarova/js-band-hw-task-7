@@ -5,7 +5,13 @@ import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 
 class Modal extends Component {
-    backdropeRef = createRef();
+    constructor(props) {
+        super(props);
+        this.backdropeRef = createRef();
+
+        this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.handleBackDropClick = this.handleBackDropClick.bind(this);
+    }
 
     componentDidMount() {
         window.addEventListener('keydown', this.handleKeyPress);
@@ -15,16 +21,18 @@ class Modal extends Component {
         window.removeEventListener('keydown', this.handleKeyPress);
     }
 
-    handleKeyPress = e => {
-        if (e.code !== 'Escape') return;
-        this.props.onClose();
-    };
-
-    handleBackDropClick = e => {
+    handleBackDropClick(e) {
+        const { onClose } = this.props;
         const { current } = this.backdropeRef;
         if (current && e.target !== current) return;
-        this.props.onClose();
-    };
+        onClose();
+    }
+
+    handleKeyPress(e) {
+        const { onClose } = this.props;
+        if (e.code !== 'Escape') return;
+        onClose();
+    }
 
     render() {
         const { children } = this.props;

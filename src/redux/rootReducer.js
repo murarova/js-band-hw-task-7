@@ -6,7 +6,7 @@ import filterReducer from './reducers/filterReducer';
 const rootReducer = combineReducers({
     notes: notesReducer,
     modal: modalReducer,
-    filteredNotes: filterReducer,
+    filter: filterReducer,
 });
 
 export default rootReducer;
